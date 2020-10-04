@@ -77,7 +77,7 @@
   </div>
 
   <p-button
-    label="Add" 
+    [label]="buttonLabel" 
     [disabled]="createEventFormGroup.invalid"
     (click)="closeDialog($event)">
   </p-button>

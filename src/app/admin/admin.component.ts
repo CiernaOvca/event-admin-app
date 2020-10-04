@@ -120,11 +120,6 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  onSelect($event){
-    console.log('you selected', $event);
-    console.log(new Date($event));
-  }
-
   // show dialog with details of the event
   showEventDetail($event){
     const data = this.adminService.getEventDetail($event);
@@ -141,8 +136,7 @@ export class AdminComponent implements OnInit {
     });
 
     this.ref.onClose.subscribe((ret) => {
-      if(ret){
-        console.log('closed dialog with message:', ret);   
+      if(ret){ 
         this.messageService.add({
           severity:'success', 
           summary:'Event added', 

@@ -21,6 +21,7 @@ export class CreateEventDialogComponent implements OnInit, OnDestroy {
   public maxPpl: number = 9999;
   public disabledDates = new Array<Date>();
   public showDateOverlayError: boolean = false;
+  public buttonLabel = 'Add';
 
   constructor(
     public ref: DynamicDialogRef,
@@ -44,6 +45,7 @@ export class CreateEventDialogComponent implements OnInit, OnDestroy {
     
     if(this.config.data){
       this.createEventFormGroup.setValue(this.config.data);
+      this.buttonLabel = 'OK';
     }
 
     this.createEventService.getDataForDropdown();
@@ -89,13 +91,11 @@ export class CreateEventDialogComponent implements OnInit, OnDestroy {
                                 (values[1] > e.dateRange[0] && values[1] < e.dateRange[1]) || 
                                 (e.dateRange[1] > values[0] && e.dateRange[1] < values[1]) );
       if(result.length > 0){ 
-        console.log('error');
         this.createEventFormGroup.controls['dateRange'].setErrors({'incorrect': true});
         this.showDateOverlayError = true;
         return true;
       }
       else{
-        console.log('not anymore');
         this.createEventFormGroup.controls['dateRange'].setErrors(null);
         this.showDateOverlayError = false;
         return false;
