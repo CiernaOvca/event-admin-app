@@ -1,0 +1,14 @@
+.p-field{
+    margin-bottom: 25px !important;
+    width: 50%;
+}
+
+.big-field{
+    width: 100% !important;
+}
+
+div p-button{
+    margin-bottom: 30px;
+    justify-content: center;
+    align-items: center;
+}

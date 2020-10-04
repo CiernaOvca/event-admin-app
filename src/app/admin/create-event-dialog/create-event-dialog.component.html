@@ -1,0 +1,84 @@
+<div class="card" style="margin-top: 15px;">
+  <div class="p-fluid">
+    <form 
+      [formGroup]="createEventFormGroup"
+    >
+      <div class="p-field big-field">
+        <label for="eventName">Name of the event</label>
+        <input 
+          formControlName="eventName"
+          id="eventName" 
+          type="text" 
+          required
+          pInputText> 
+      </div>
+
+      <div class="p-field">
+        <label for="eventPlace">Room</label>
+        <p-dropdown 
+          formControlName="eventPlace"
+          id="eventPlace"
+          placeholder="Select a room"
+          tooltip="Selection affects max. number of people for the event."
+          group="true"
+          [options]="placesList" 
+          [showClear]="true"
+          (onBlur)="changedPlace()"></p-dropdown>
+      </div>
+
+      <div class="p-field">
+        <label for="dateRange">Dates of the event 
+          <div *ngIf="showDateOverlayError" style="color: red;">Chosen dates are overlaying with another event.</div>
+        </label>
+        <p-calendar 
+          formControlName="dateRange" 
+          id="dateRange" 
+          selectionMode="range" 
+          showIcon="true"
+          [readonlyInput]="true"
+          [disabledDates]="disabledDates"
+          (onClose)="changedDates()"
+          ></p-calendar>
+      </div>
+
+      <div class="p-field">
+        <label for="eventTime">Beginning</label>
+        <p-calendar
+          formControlName="eventTime"
+          id="eventTime"
+          [hourFormat]="24"
+          [timeOnly]="true">
+        </p-calendar>
+      </div>
+
+      <div class="p-field p-col-12 p-md-3">
+        <label for="minmax-buttons">Max. number of people</label>
+        <p-inputNumber 
+          formControlName="peopleNmbr"
+          id="minmax-buttons" 
+          mode="decimal" 
+          pTooltip="The maximum number of people depends on the capacity of the selected room."
+          [min]="0" 
+          [max]="maxPpl"
+          [showButtons]="true">
+        </p-inputNumber>
+      </div>
+
+      <div class="p-field">
+        <label for="privateEvent">Private event</label>   
+        <p-selectButton 
+          id="privateEvent"
+          formControlName="privateEvent"
+          [options]="privateEventOptions">
+        </p-selectButton>
+      </div>
+
+    </form>
+  </div>
+
+  <p-button
+    label="Add" 
+    [disabled]="createEventFormGroup.invalid"
+    (click)="closeDialog($event)">
+  </p-button>
+</div>

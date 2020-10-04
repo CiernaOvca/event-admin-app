@@ -1,0 +1,91 @@
+<p-menubar [model]="menuItems">
+    <div>
+        <img height="40" src="../../favicon.ico">
+    </div>
+</p-menubar>
+<div style="margin-bottom: 50px;"></div>
+
+<p-messages enableService="true" key="message"></p-messages>
+<p-messages enableService="true" key="warn"></p-messages>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<p-table 
+    #dataTable
+    sortField="name"
+    stateKey="state-session"
+    stateStorage="session"
+    selectionMode="single"
+    [rows]="5" 
+    [lazy]="true"
+    [value]="eventList"  
+    [loading]="loading"
+    [paginator]="true"
+    [customSort]="true"
+    [responsive]="true"
+    [totalRecords]="totalRecords"
+    [globalFilterFields]="['name']"
+    (onLazyLoad)="loadData($event)"
+    (sortFunction)="customSort($event)"
+    [(first)]="first"
+>
+    <ng-template pTemplate="caption">
+        <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+        <input type="text" pInputText size="50" placeholder="Filter by event name" (input)="dataTable.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        <button pButton type="button" label="Add new event" class="p-button-sm" style="float: right;" (click)="showCreateDialog(null)"></button>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of tableColumns" [pSortableColumn]="col.field" [ngStyle]="{'display': col.display }">
+                {{col.header}}
+                <p-sortIcon *ngIf="col.field != 'privateEvent'" [field]="col.field"></p-sortIcon>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-event>
+        <tr>
+            <td *ngFor="let col of tableColumns" [ngStyle]="{'display': col.display}">
+                <div [ngSwitch]="col.field">
+                    <div *ngSwitchCase="'dateRange'">
+                        <div *ngIf="event['isPast'] == true; else pastEvent" style="color: gray;">
+                            {{event[col.field][0] | date : 'dd.MM.yyyy'}} - {{event[col.field][1] | date:'dd.MM.yyyy'}}
+                            <span class="p-tag p-tag-danger">past event</span>
+                        </div>
+                        <ng-template #pastEvent>
+                            {{event[col.field][0] | date : 'dd.MM.yyyy'}} - {{event[col.field][1] | date:'dd.MM.yyyy'}}
+                            <span class="p-tag p-tag-success">
+                                in {{Math.floor((Date.UTC(event[col.field][0].getFullYear(), event[col.field][0].getMonth(), event[col.field][0].getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) ) / (1000 * 60 * 60 * 24))}} days
+                            </span>
+                        </ng-template>    
+                    </div>
+
+                    <div *ngSwitchCase="'eventName'">
+                        {{event[col.field]}}
+                        <div *ngIf="event['privateEvent']">
+                            <span class="p-tag p-tag-warning">private event</span>
+                        </div>
+                    </div>
+
+                    <div *ngSwitchDefault>{{event[col.field]}}</div>
+                </div>
+            </td>
+            <button 
+                pButton 
+                pRipple 
+                type="button" 
+                icon="pi pi-search" 
+                class="p-button-rounded p-button-text p-button-plain"
+                (click)="showEventDetail(event.id)">
+            </button>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="summary">
+        Show past events ({{pastEvents}}). 
+        <p-inputSwitch [(ngModel)]="showPastEvents" (onChange)="handlePastEvents($event)" [style]="{'float': 'right'}"></p-inputSwitch>
+    </ng-template>
+
+</p-table>
